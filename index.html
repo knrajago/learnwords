@@ -1,27 +1,128 @@
 <html>
     <head>
     	<title>Dhruva learning words</title>
+    	<style type="text/css">
+    		.type0 {
+    			font-family: Impact;
+    			color: #F6F600;
+    		}
+    		.type1 {
+    			font-family: Ariel-Sans;
+    			color: #00FFD1;
+    		}
+    		.type2 {
+    			font-family: monospace;
+    			color: #00FF00;
+    		}
+    		.type3 {
+    			font-family: Impact;
+    			color: #FF0;
+    		}
+    		.type4 {
+    			font-family: Impact;
+    			color: #D945D9;
+    		}
+    	</style>
     	<script type="text/javascript">
-    		var words = [ "a", "by", "my", "this", "his", "that", "could", "her", "whose", "whom", "when", "what", "an", "would", "then", "should", "below", "above", "after", "before", "same", "came", "be"];
-    		var correctCount = [];
-    		var wrongCount = [];
+    		//var words = [ "a", "by", "my", "this", "his", "that", "could", "her", "whose", "whom", "when", "what", "an", "would", "then", "should", "below", "above", "after", "before", "same", "came", "be"];
+    		var words = [ "a", "by"];
+    		var workingWords = words.slice();
+    		var correctWords = [];
+    		var wrongWords = [];
     		var currentWord = null;
+    		var numberOfStyles = 5;
+    		var remainingItemsLen = workingWords.length;
+
+    		function populateStatistics() {
+                var totalItemsDiv = document.getElementById("totalItems");
+                var completedItemsDiv = document.getElementById("completedItems");
+                var remainingItemsDiv = document.getElementById("remainingItems");
+                var correctItemsDiv = document.getElementById("correctItems");
+                var wrongItemsDiv = document.getElementById("wrongItems");
+
+                var completedItemLen = correctWords.length + wrongWords.length;
+                remainingItemsLen = workingWords.length - completedItemLen;
+
+
+                totalItemsDiv.innerHTML = '<span> Total words: </span> <span>' + workingWords.length + '</span>';
+                completedItemsDiv.innerHTML = '<span> Completed words: </span> <span>' + (workingWords.length - remainingItemsLen) + '</span>';
+                remainingItemsDiv.innerHTML = '<span> Remaining words: </span> <span>' + ((remainingItemsLen == 0)? 0 : remainingItemsLen - 1) + '</span>';
+                correctItemsDiv.innerHTML = '<span> Correct words: </span> <span>' + correctWords.length + '</span>';
+                wrongItemsDiv.innerHTML = '<span> Wrong words: </span> <span>' + wrongWords.length + '</span>';
+    		}
+
+    		function disableButtons() {
+    			if (remainingItemsLen && remainingItemsLen == 0)
+    			{
+    				var correctButtonBtn = document.getElementById("correctButton");
+    				correctButton.disabled = True;
+    				var wrongButtonnBtn = document.getElementById("wrongButton");
+    				wrongButtonBtn.disabled = True;
+    			}
+    		}
+
     		function getWordAndStyle() {
-    			var wordsLength = words.length;
-    			var randomIdx = Math.floor(Math.random() * wordsLength);
-    			currentWord = words[randomIdx];
     			var divToPopulate = document.getElementById("textDiv");
-    			divToPopulate.innerHTML = "<span>" + currentWord +  "</span>";
+    			if (remainingItemsLen > 1) {
+    				var wordsLength = workingWords.length;
+    			    currentWord = null;
+    			
+    			    var styleIdx = Math.floor(Math.random() * numberOfStyles);
+	    			while (currentWord == null || correctWords.includes(currentWord) || wrongWords.includes(currentWord))
+	    			{
+	    			    var randomIdx = Math.floor(Math.random() * wordsLength);
+	                    currentWord = workingWords[randomIdx];
+	                }
+    			    
+    			    divToPopulate.innerHTML = "<span class='type" + styleIdx + "'>" + currentWord +  "</span>";
+    			} else {
+    				divToPopulate.innerHTML = "<span class='type4'> *** </span>";
+    			}
+    			populateStatistics();
+    			disableButtons();
     		}
 
     		function correctLoadNext() {
+    			
+    			if (!correctWords.includes(currentWord)) {
+    				correctWords.push(currentWord);
+    			}
+    			if (wrongWords.includes(currentWord)) {
+    				wrongWords.remove(currentWord);
+    			}
     			getWordAndStyle();
-    			if (!correctCount.contains(currentWord)) {
-    				correctCount.push(currentWord);
+    		}
+
+    		function wrongLoadNext() {
+    			if (!wrongWords.includes(currentWord)) {
+    				wrongWords.push(currentWord);
     			}
-    			if (wrongCount.contains(currentWord)) {
-    				wrongCount.remove(currentWord);
+    			if (correctWords.includes(currentWord)) {
+    				correctWords.remove(currentWord);
     			}
+    			getWordAndStyle();
+    		}
+
+    		function seeAllWords() {
+    			var resultDiv = document.getElementById('results');
+    			var resultStr = '';
+    			var breakPoint = 15;
+    			var breakPointCount = 0;
+    			for (var iDx = 0; iDx < words.length; iDx++) {
+    				var word = words[iDx];
+    				resultStr += "<span style='margin-left: 0.25em;'>" + word + ",</span>";
+    				breakPointCount++;
+    				if (breakPointCount == breakPoint) {
+    					resultStr += "<br/>"
+    				}
+    			}
+    			resultDiv.innerHTML = resultStr;
+    		}
+
+    		function reviseWrong() {
+    			workingWords = wrongWords.slice();
+    			correctWords = [];
+    			wrongWords = [];
     			getWordAndStyle();
     		}
     	</script>
@@ -29,9 +130,23 @@
     <body onload="getWordAndStyle()">
         <div id ="textDiv" style="text-align: center; width: 100%; font-size: 10em;"><span id="textP">This</span>
         </div>
+        <div id="actionBar" style="text-align: center; width: 100%; font-size: 3em;">
+        	<button id="correctButton" onclick="correctLoadNext()" style="height:1.5em; width:5em;font-size: 1em; background-color: #00FF00;">Correct</button>
+        	<button id="wrongButton" onclick="wrongLoadNext()" style="height:1.5em; width:5em;font-size: 1em; background-color: #FF0000;">Wrong</button>
+        </div>
+        <div style="width:100%; text-align: center;">
+        	<div  style="2em" id="totalItems"></div>
+        	<div  style="2em" id="completedItems"></div>
+        	<div  style="2em" id="remainingItems"></div>
+        	<div  style="2em" id="correctItems"></div>
+        	<div  style="2em" id="wrongItems"></div>
+        </div>
         <div id="actionBar" style="text-align: center; width: 100%; font-size: 5em;">
-        	<button onclick="getWordAndStyle()">Correct</button>
-        	<button onclick="getWordAndStyle()">Wrong</button>
+        	<button onclick="seeAllWords()" style="height:2.5em; width:10em; font-size: 0.25em; background-color: #00FF00;">See All Words</button>
+        	<button onclick="reviseWrong()" style="height:2.5em; width:10em; font-size: 0.25em; background-color: #00FF00;">Revise Wrong Words</button>
+        	<div id="results" style="text-align: center; width: 100%; font-size: 0.25em;">
+
+        	</div>
         </div>
     </body>
 </html>
