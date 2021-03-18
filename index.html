@@ -1,6 +1,18 @@
 <html>
-    <head><title>Dhruva learning words</title></head>
-    <body>
+    <head>
+    	<title>Dhruva learning words</title>
+    	<script type="text/javascript">
+    		var words = [ "a", "by", "my", "this", "his", "that", "could", "her"];
+    		function getFieldAndStyle() {
+    			var wordsLength = words.length;
+    			var randomIdx = Math.floor(Math.random() * wordsLength);
+    			var randomWord = words[randomIdx];
+    			var divToPopulate = document.getElementById("textDiv");
+    			divToPopulate.innerHTML = "<p>" + randomWord +  "</p>";
+    		}
+    	</script>
+    </head>
+    <body onload="getFieldAndStyle">
         <div id ="textDiv"><p id="textP">This</p>
         </div>
     </body>
