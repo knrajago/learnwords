@@ -3,7 +3,7 @@
     	<title>Dhruva learning words</title>
     	<script type="text/javascript">
     		var words = [ "a", "by", "my", "this", "his", "that", "could", "her"];
-    		function getFieldAndStyle() {
+    		function getWordAndStyle() {
     			var wordsLength = words.length;
     			var randomIdx = Math.floor(Math.random() * wordsLength);
     			var randomWord = words[randomIdx];
@@ -12,8 +12,11 @@
     		}
     	</script>
     </head>
-    <body onload="getFieldAndStyle">
+    <body onload="getWordAndStyle()">
         <div id ="textDiv"><p id="textP">This</p>
+        </div>
+        <div id="actionBar">
+        	<button onclick="getWordAndStyle()">Next</button>
         </div>
     </body>
 </html>
