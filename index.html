@@ -115,7 +115,8 @@
     				resultStr += "<span style='margin-left: 0.25em;'>" + word + ",</span>";
     				breakPointCount++;
     				if (breakPointCount == breakPoint) {
-    					resultStr += "<br/>"
+    					resultStr += "<br/>";
+					breakPointCount = 0;
     				}
     			}
     			resultDiv.innerHTML = resultStr;
